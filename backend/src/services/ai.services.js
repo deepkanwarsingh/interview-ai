@@ -34,32 +34,40 @@ const interviewReportSchema = z.object({
     })).describe("A day-wise preparation plan for the candidate to follow in order to prepare for the interview effectively"),
     title: z.string().describe("The title of the job for which the interview report is generated"),
 })
-
+const models=["gemini-3-flash-preview","gemini-3.1-flash-lite"]
 async function generateInterviewReport({ resume, selfDescription, jobDescription }) {
+    let model=0;
+    
+    while(model<models.length){
+        try {
+            const prompt = `Generate an interview report for a candidate with the following details:
+                                Resume: ${resume}
+                                Self Description: ${selfDescription}
+                                Job Description: ${jobDescription}
+        `
 
-
-    const prompt = `Generate an interview report for a candidate with the following details:
-                        Resume: ${resume}
-                        Self Description: ${selfDescription}
-                        Job Description: ${jobDescription}
-`
-
-    const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt,
-        config: {
-            responseMimeType: "application/json",
-            responseSchema: zodToJsonSchema(interviewReportSchema),
+            const response = await ai.models.generateContent({
+                model: models[model++],
+                contents: prompt,
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: zodToJsonSchema(interviewReportSchema),
+                }
+            })
+            // const jsonSchema = zodToJsonSchema(interviewReportSchema, {
+            // name: "interviewReportSchema",
+            // target: "jsonSchema7"
+            // });
+            // console.log(models[model-1]);
+            return JSON.parse(response.text)
+            // return "nothing"
+        }catch(error){
+            console.log(error)
         }
-    })
-    // const jsonSchema = zodToJsonSchema(interviewReportSchema, {
-    // name: "interviewReportSchema",
-    // target: "jsonSchema7"
-    // });
-    // console.log(JSON.stringify(jsonSchema, null, 2));
-    return JSON.parse(response.text)
-    // return "nothing"
-
+    }
+    return {
+        "Error":"models are busy"
+    }
 
 }
 
