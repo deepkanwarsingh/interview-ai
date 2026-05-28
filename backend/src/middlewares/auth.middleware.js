@@ -1,7 +1,7 @@
-import { verify } from "jsonwebtoken"
+import jwt from "jsonwebtoken"
 
 
-function authUser(req, res, next) {
+function authMiddleware(req, res, next) {
     const token = req.cookies.token
 
     if (!token) {
@@ -11,7 +11,7 @@ function authUser(req, res, next) {
     // jwt.verify(token,process.env.JWT_SECRET)
 
     try {
-        const decoded = verify(token, process.env.JWT_SECRET)
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
         req.user = decoded
 
@@ -22,4 +22,4 @@ function authUser(req, res, next) {
 
 }
 
-export default authUser
+export {authMiddleware}

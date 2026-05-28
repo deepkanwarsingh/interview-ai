@@ -1,6 +1,6 @@
-const pdfParse = require("pdf-parse")
-const { generateInterviewReport, generateResumePdf } = require("../services/ai.service")
-const interviewReportModel = require("../models/interviewReport.model")
+import {PDFParse} from "pdf-parse"
+import { generateInterviewReport, generateResumePdf } from "../services/ai.services.js"
+import {interviewReportModel} from "../models/interviewReport.model.js"
 
 
 
@@ -10,7 +10,7 @@ const interviewReportModel = require("../models/interviewReport.model")
  */
 async function generateInterViewReportController(req, res) {
 
-    const resumeContent = await (new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText()
+    const resumeContent = await (new PDFParse(Uint8Array.from(req.file.buffer))).getText()
     const { selfDescription, jobDescription } = req.body
 
     const interViewReportByAi = await generateInterviewReport({
@@ -18,12 +18,15 @@ async function generateInterViewReportController(req, res) {
         selfDescription,
         jobDescription
     })
-
+    // console.log(interViewReportByAi)
+    // console.log(selfDescription)
+    // console.log(jobDescription)
     const interviewReport = await interviewReportModel.create({
         user: req.user.id,
         resume: resumeContent.text,
         selfDescription,
         jobDescription,
+        // title:req.body.title,
         ...interViewReportByAi
     })
 
@@ -95,4 +98,4 @@ async function generateResumePdfController(req, res) {
     res.send(pdfBuffer)
 }
 
-module.exports = { generateInterViewReportController, getInterviewReportByIdController, getAllInterviewReportsController, generateResumePdfController }
+export { generateInterViewReportController, getInterviewReportByIdController, getAllInterviewReportsController, generateResumePdfController }

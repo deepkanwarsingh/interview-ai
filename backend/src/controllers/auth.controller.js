@@ -50,9 +50,9 @@ export async function registerUserController(req, res) {
 export async function loginUserController(req, res) {
     try {
         const { email, password } = req.body
-console.log("email",email,"password",password)
-console.log(req.headers)
-console.log(req.body)
+// console.log("email",email,"password",password)
+// console.log(req.headers)
+// console.log(req.body)
         if (!email || !password) {
             return res.status(400).json({ message: "All fields are required" })
         }
