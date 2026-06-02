@@ -17,6 +17,6 @@ connectDB();//connect to Db
 // Call Gemini AI function
 // invokegeminiAi();
 
-app.listen(3000, () => {
+app.listen(process.env.port || 3000, () => {
     console.log("server is running on port 3000");
 });
