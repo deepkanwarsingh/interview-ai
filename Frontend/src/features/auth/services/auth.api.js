@@ -58,7 +58,7 @@ export async function logout() {
 
 export async function getMe() {
     try {
-        const response = await axios.get("http://localhost:300/api/auth/get-me", {
+        const response = await axios.get("http://localhost:3000/api/auth/get-me", {
             withCredentials: true
         })
     } catch (err) {
