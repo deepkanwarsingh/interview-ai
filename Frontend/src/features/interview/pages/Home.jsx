@@ -1,9 +1,33 @@
-import React from 'react'
-import "../styles/home.scss"
+import React, { useState, useRef } from 'react'
+import "../style/home.scss"
+import { useInterview } from '../hooks/useInterview.js'
+import { useNavigate } from 'react-router'
 
 const Home = () => {
-  return (
-      <div className='home-page'>
+
+    const { loading, generateReport,reports } = useInterview()
+    const [ jobDescription, setJobDescription ] = useState("")
+    const [ selfDescription, setSelfDescription ] = useState("")
+    const resumeInputRef = useRef()
+
+    const navigate = useNavigate()
+
+    const handleGenerateReport = async () => {
+        const resumeFile = resumeInputRef.current.files[ 0 ]
+        const data = await generateReport({ jobDescription, selfDescription, resumeFile })
+        navigate(`/interview/${data._id}`)
+    }
+
+    if (loading) {
+        return (
+            <main className='loading-screen'>
+                <h1>Loading your interview plan...</h1>
+            </main>
+        )
+    }
+
+    return (
+        <div className='home-page'>
 
             {/* Page Header */}
             <header className='page-header'>
@@ -57,7 +81,7 @@ const Home = () => {
                                 </span>
                                 <p className='dropzone__title'>Click to upload or drag &amp; drop</p>
                                 <p className='dropzone__subtitle'>PDF or DOCX (Max 5MB)</p>
-                                {/* <input ref={} hidden type='file' id='resume' name='resume' accept='.pdf,.docx' /> */}
+                                <input ref={resumeInputRef} hidden type='file' id='resume' name='resume' accept='.pdf,.docx' />
                             </label>
                         </div>
 
@@ -90,7 +114,7 @@ const Home = () => {
                 <div className='interview-card__footer'>
                     <span className='footer-info'>AI-Powered Strategy Generation &bull; Approx 30s</span>
                     <button
-                        // onClick={handleGenerateReport}
+                        onClick={handleGenerateReport}
                         className='generate-btn'>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" /></svg>
                         Generate My Interview Strategy
@@ -99,7 +123,20 @@ const Home = () => {
             </div>
 
             {/* Recent Reports List */}
-         
+            {reports.length > 0 && (
+                <section className='recent-reports'>
+                    <h2>My Recent Interview Plans</h2>
+                    <ul className='reports-list'>
+                        {reports.map(report => (
+                            <li key={report._id} className='report-item' onClick={() => navigate(`/interview/${report._id}`)}>
+                                <h3>{report.title || 'Untitled Position'}</h3>
+                                <p className='report-meta'>Generated on {new Date(report.createdAt).toLocaleDateString()}</p>
+                                <p className={`match-score ${report.matchScore >= 80 ? 'score--high' : report.matchScore >= 60 ? 'score--mid' : 'score--low'}`}>Match Score: {report.matchScore}%</p>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
 
             {/* Page Footer */}
             <footer className='page-footer'>
