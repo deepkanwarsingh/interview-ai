@@ -6,7 +6,7 @@ import {resume,selfDescription,jobDescription} from './src/services/temp.js'
 import {generateInterviewReport} from "./src/services/ai.services.js"
 dotenv.config();
 
-connectDB();
+connectDB();//connect to Db
 
 
 // const report = await generateInterviewReport({ resume, selfDescription, jobDescription })
