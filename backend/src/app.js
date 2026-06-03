@@ -3,9 +3,13 @@ import authRouter from './routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import interviewRouter from "./routes/interview.routes.js"
+import dotenv from 'dotenv';
+
+dotenv.config()
+
 const app = express();
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.BASE_URL_FRONTENED,
     credentials: true
 }))
 
