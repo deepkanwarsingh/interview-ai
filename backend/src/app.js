@@ -9,7 +9,7 @@ dotenv.config()
 
 const app = express();
 app.use(cors({
-    origin: process.env.BASE_URL_FRONTENED,
+    origin: process.env.BASE_URL_FRONTENED,//test for railway
     credentials: true
 }))
 
