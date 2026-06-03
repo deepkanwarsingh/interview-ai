@@ -59,21 +59,13 @@ export async function logout() {
 
 export async function getMe() {
     try {
-<<<<<<< HEAD
+
         const response = await axios.get(
             `${BASE_URL}/auth/get-me`,
             {
                 withCredentials: true
             }
         );
-=======
-        const response = await axios.get("http://localhost:3000/api/auth/get-me", {
-            withCredentials: true
-        })
-    } catch (err) {
-        console.log(err)
-    }
->>>>>>> 081c02dbf0d5d51a1bb0076c4db6f876252851f4
 
         return response.data;
     } catch (err) {
