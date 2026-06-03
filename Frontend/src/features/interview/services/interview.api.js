@@ -5,13 +5,13 @@ const api = axios.create({
     withCredentials: true,
 });
 
-// Attach token automatically
+// Attach token to every request
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");
 
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers.token = `Bearer ${token}`;
         }
 
         return config;
@@ -33,15 +33,11 @@ export const generateInterviewReport = async ({
     formData.append("selfDescription", selfDescription);
     formData.append("resume", resumeFile);
 
-    const response = await api.post(
-        "/interview/",
-        formData,
-        {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        }
-    );
+    const response = await api.post("/interview", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
 
     return response.data;
 };
@@ -50,9 +46,7 @@ export const generateInterviewReport = async ({
  * @description Service to get interview report by interviewId.
  */
 export const getInterviewReportById = async (interviewId) => {
-    const response = await api.get(
-        `/interview/report/${interviewId}`
-    );
+    const response = await api.get(`/interview/report/${interviewId}`);
 
     return response.data;
 };
@@ -61,7 +55,7 @@ export const getInterviewReportById = async (interviewId) => {
  * @description Service to get all interview reports of logged in user.
  */
 export const getAllInterviewReports = async () => {
-    const response = await api.get("/interview/");
+    const response = await api.get("/interview");
 
     return response.data;
 };
