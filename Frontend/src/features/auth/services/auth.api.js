@@ -16,9 +16,15 @@ export async function register({ username, email, password }) {
             }
         );
 
+        // Save token
+        if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+        }
+
         return response.data;
     } catch (error) {
         console.log(error);
+        throw error;
     }
 }
 
@@ -35,9 +41,17 @@ export async function login({ email, password }) {
             }
         );
 
+        // Save token
+        if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+        }
+
+        console.log(response)
+
         return response.data;
     } catch (error) {
         console.log(error);
+        throw error;
     }
 }
 
@@ -51,18 +65,26 @@ export async function logout() {
             }
         );
 
+        // Remove token
+        localStorage.removeItem('token');
+
         return response.data;
     } catch (err) {
         console.log(err);
+        throw err;
     }
 }
 
 export async function getMe() {
     try {
+        const token = localStorage.getItem('token');
 
         const response = await axios.get(
             `${BASE_URL}/auth/get-me`,
             {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
                 withCredentials: true
             }
         );
@@ -70,5 +92,6 @@ export async function getMe() {
         return response.data;
     } catch (err) {
         console.log(err);
+        throw err;
     }
 }
