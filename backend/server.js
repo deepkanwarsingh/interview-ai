@@ -6,7 +6,7 @@ import {resume,selfDescription,jobDescription} from './src/services/temp.js'
 import {generateInterviewReport} from "./src/services/ai.services.js"
 dotenv.config();
 
-connectDB();
+connectDB();//connect to Db
 
 
 // const report = await generateInterviewReport({ resume, selfDescription, jobDescription })
@@ -17,6 +17,7 @@ connectDB();
 // Call Gemini AI function
 // invokegeminiAi();
 
-app.listen(3000, () => {
-    console.log("server is running on port 3000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`server is running on port ${PORT}`);
 });
