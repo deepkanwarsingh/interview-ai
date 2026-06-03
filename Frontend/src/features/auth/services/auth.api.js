@@ -77,8 +77,11 @@ export async function logout() {
 
 export async function getMe() {
     try {
+<<<<<<< HEAD
         const token = localStorage.getItem('token');
 
+=======
+>>>>>>> ac56eb6209d2865d4cfe2e9112f1143c85aa5ebb
         const response = await axios.get(
             `${BASE_URL}/auth/get-me`,
             {
