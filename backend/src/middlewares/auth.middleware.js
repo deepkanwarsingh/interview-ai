@@ -2,11 +2,12 @@ import jwt from "jsonwebtoken"
 
 
 function authMiddleware(req, res, next) {
-    const token = req.headers.token.split(" ")
+    let token = req.headers.token
     if (!token) {
         return res.status(401).json({ message: "Token not provided" })
     }
     // console.log(token[0]);
+    token=token.split(" ")
     if(token[0]!="Bearer"){
         return res.status(401).json({ message: "Token provided is wrong" })
     }

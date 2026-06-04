@@ -9,31 +9,42 @@ import {interviewReportModel} from "../models/interviewReport.model.js"
  * @description Controller to generate interview report based on user self description, resume and job description.
  */
 async function generateInterViewReportController(req, res) {
-
-    const resumeContent = await (new PDFParse(Uint8Array.from(req.file.buffer))).getText()
+    let resumeContent={
+            text:""
+        }
+    
+    if(req.file){
+        resumeContent = await (new PDFParse(Uint8Array.from(req.file.buffer))).getText()   
+    }
+    
     const { selfDescription, jobDescription } = req.body
+    if((resumeContent.text=="" && selfDescription==null) || jobDescription==null){
+        res.status(400).json({
+            message:"Please check the data again"
+        })
+    }else{
+        const interViewReportByAi = await generateInterviewReport({
+            resume: resumeContent.text,
+            selfDescription,
+            jobDescription
+        })
+        // console.log(interViewReportByAi)
+        // console.log(selfDescription)
+        // console.log(jobDescription)
+        const interviewReport = await interviewReportModel.create({
+            user: req.user.id,
+            resume: resumeContent.text,
+            selfDescription,
+            jobDescription,
+            // title:req.body.title,
+            ...interViewReportByAi
+        })
 
-    const interViewReportByAi = await generateInterviewReport({
-        resume: resumeContent.text,
-        selfDescription,
-        jobDescription
-    })
-    // console.log(interViewReportByAi)
-    // console.log(selfDescription)
-    // console.log(jobDescription)
-    const interviewReport = await interviewReportModel.create({
-        user: req.user.id,
-        resume: resumeContent.text,
-        selfDescription,
-        jobDescription,
-        // title:req.body.title,
-        ...interViewReportByAi
-    })
-
-    res.status(201).json({
-        message: "Interview report generated successfully.",
-        interviewReport
-    })
+        res.status(201).json({
+            message: "Interview report generated successfully.",
+            interviewReport
+        })
+    }
 
 }
 
