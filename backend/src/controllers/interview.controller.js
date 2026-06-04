@@ -14,7 +14,15 @@ async function generateInterViewReportController(req, res) {
         }
     
     if(req.file){
-        resumeContent = await (new PDFParse(Uint8Array.from(req.file.buffer))).getText()   
+        try {
+            resumeContent = await (new PDFParse(Uint8Array.from(req.file.buffer))).getText() 
+        }catch(err){
+            res.status(400).json({
+                message:"Please check the resume once again ",
+                eror:err
+            })
+            return;
+        }  
     }
     
     const { selfDescription, jobDescription } = req.body
